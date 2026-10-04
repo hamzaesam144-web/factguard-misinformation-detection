@@ -1,0 +1,41 @@
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# AI model files / checkpoints
+*.pth
+*.pt
+*.bin
+*.safetensors
+checkpoints/
+factguard_mmbert_small/
+factguard_xlm_roberta/
+
+# Training datasets / generated data
+Dataset/
+prepared_data/
+
+# Logs
+*.log

@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Fact Guard</title>
+        <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                margin: 0;
+                font-family: Georgia, "Times New Roman", serif;
+                background: #f4f1ea;
+                color: #171717;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .top-bar {
+                background: #111827;
+                color: #f8fafc;
+                padding: 8px 7%;
+                font-family: Arial, sans-serif;
+                font-size: 13px;
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+            }
+
+            nav {
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                background: rgba(255, 255, 255, 0.96);
+                border-bottom: 1px solid #d5d0c7;
+                padding: 18px 7%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                backdrop-filter: blur(10px);
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .brand-mark {
+                width: 44px;
+                height: 44px;
+                border: 2px solid #8b1e1e;
+                display: grid;
+                place-items: center;
+                font-size: 22px;
+                background: #fff;
+            }
+
+            .brand-video {
+                width: 75px;
+                height: 75px;
+                object-fit: cover;
+                border-radius: 8px;
+                border: 2px solid #8b1e1e;
+                background: #fff;
+                display: block;
+            }
+
+            .brand h1 {
+                margin: 0;
+                font-size: 32px;
+                letter-spacing: -1px;
+            }
+
+            .brand span {
+                display: block;
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                color: #555;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+            }
+
+            nav .links {
+                display: flex;
+                gap: 24px;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+                font-weight: 700;
+                color: #333;
+            }
+
+            nav .links a:hover {
+                color: #8b1e1e;
+            }
+
+            .hero {
+                position: relative;
+                min-height: 78vh;
+                padding: 70px 7%;
+                display: grid;
+                grid-template-columns: 1.15fr 0.85fr;
+                gap: 45px;
+                align-items: center;
+                border-bottom: 1px solid #d5d0c7;
+                overflow: hidden;
+                color: #fff;
+                background: #111827;
+            }
+
+            .hero-video {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                z-index: 0;
+                filter: brightness(90%) contrast(75%);
+            }
+
+            .hero::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                z-index: 1;
+                background:
+                    linear-gradient(
+                        90deg,
+                        rgba(8, 13, 24, 0.92),
+                        rgba(17, 24, 39, 0.72),
+                        rgba(17, 24, 39, 0.45)
+                    ),
+                    linear-gradient(
+                        180deg,
+                        rgba(0, 0, 0, 0.12),
+                        rgba(0, 0, 0, 0.55)
+                    );
+            }
+
+            .hero > div,
+            .hero-card {
+                position: relative;
+                z-index: 2;
+            }
+
+            .kicker {
+                font-family: Arial, sans-serif;
+                color: #8b1e1e;
+                font-weight: 800;
+                text-transform: uppercase;
+                letter-spacing: 1.7px;
+                font-size: 13px;
+            }
+
+            .hero h2 {
+                font-size: clamp(44px, 6vw, 78px);
+                line-height: 0.95;
+                margin: 12px 0 22px;
+                letter-spacing: -2px;
+            }
+
+            .hero p {
+                font-family: Arial, sans-serif;
+                font-size: 19px;
+                line-height: 1.75;
+                color: #e5e7eb;
+                max-width: 700px;
+            }
+
+            .btn {
+                display: inline-block;
+                margin-top: 20px;
+                background: #8b1e1e;
+                color: white;
+                padding: 14px 22px;
+                border-radius: 2px;
+                font-family: Arial, sans-serif;
+                font-weight: 800;
+                border: none;
+                cursor: pointer;
+                transition: 0.2s;
+            }
+
+            .btn:hover {
+                background: #651515;
+                transform: translateY(-1px);
+            }
+
+            .btn:disabled {
+                opacity: 0.55;
+                cursor: not-allowed;
+            }
+
+            .hero-card {
+                background: rgba(255, 255, 255, 0.92);
+                color: #171717;
+                border: 1px solid rgba(255, 255, 255, 0.35);
+                padding: 28px;
+                box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+                backdrop-filter: blur(10px);
+            }
+
+            .hero-card h3 {
+                margin: 0 0 16px;
+                font-size: 27px;
+            }
+
+            .hero-card ul {
+                margin: 0;
+                padding-left: 18px;
+                font-family: Arial, sans-serif;
+                color: #333;
+                line-height: 1.8;
+            }
+
+            .section {
+                padding: 80px 7%;
+                border-bottom: 1px solid #d5d0c7;
+            }
+
+            .section-title {
+                display: flex;
+                justify-content: space-between;
+                align-items: end;
+                gap: 20px;
+                margin-bottom: 32px;
+            }
+
+            .section-title h2 {
+                font-size: 42px;
+                margin: 0;
+            }
+
+            .section-title p {
+                max-width: 560px;
+                margin: 0;
+                font-family: Arial, sans-serif;
+                color: #555;
+                line-height: 1.7;
+            }
+
+            .checker {
+                background: #fff;
+                border: 1px solid #d5d0c7;
+                display: grid;
+                grid-template-columns: 1.05fr 0.95fr;
+                gap: 0;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+            }
+
+            .checker-panel {
+                padding: 30px;
+                border-right: 1px solid #d5d0c7;
+            }
+
+            .result-panel {
+                padding: 30px;
+                background: #faf9f6;
+            }
+
+            label,
+            .field-title {
+                display: block;
+                font-family: Arial, sans-serif;
+                font-size: 13px;
+                font-weight: 800;
+                color: #555;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                margin-bottom: 10px;
+            }
+
+            textarea {
+                width: 100%;
+                min-height: 245px;
+                resize: vertical;
+                padding: 18px;
+                border: 1px solid #c7c1b8;
+                background: #fff;
+                font-size: 17px;
+                line-height: 1.6;
+                font-family: Arial, sans-serif;
+                color: #1f2937;
+            }
+
+            textarea:focus {
+                outline: 2px solid rgba(139, 30, 30, 0.2);
+                border-color: #8b1e1e;
+            }
+
+            .input-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 14px;
+                margin: 16px 0;
+            }
+
+            input[type="text"],
+            input[type="url"] {
+                width: 100%;
+                padding: 13px;
+                border: 1px solid #c7c1b8;
+                font-family: Arial, sans-serif;
+            }
+
+            .status-line {
+                margin-top: 14px;
+                min-height: 22px;
+                font-family: Arial, sans-serif;
+                color: #555;
+                font-size: 14px;
+            }
+
+            .verdict-badge {
+                display: inline-block;
+                padding: 9px 13px;
+                font-family: Arial, sans-serif;
+                font-weight: 900;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                font-size: 12px;
+                border: 1px solid #999;
+                background: #fff;
+                color: #333;
+                margin-bottom: 18px;
+            }
+
+            .badge-true {
+                border-color: #166534;
+                color: #166534;
+                background: #ecfdf3;
+            }
+
+            .badge-fake {
+                border-color: #991b1b;
+                color: #991b1b;
+                background: #fef2f2;
+            }
+
+            .badge-review {
+                border-color: #92400e;
+                color: #92400e;
+                background: #fffbeb;
+            }
+
+            .result-panel h3 {
+                font-size: 34px;
+                margin: 0 0 10px;
+            }
+
+            .result-panel p {
+                font-family: Arial, sans-serif;
+                color: #444;
+                line-height: 1.75;
+            }
+
+            .meter {
+                margin: 24px 0;
+            }
+
+            .meter-top {
+                display: flex;
+                justify-content: space-between;
+                font-family: Arial, sans-serif;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .track {
+                height: 12px;
+                background: #e7e1d7;
+                border-radius: 999px;
+                overflow: hidden;
+            }
+
+            .fill {
+                width: 0%;
+                height: 100%;
+                background: #8b1e1e;
+                transition: width 0.8s ease;
+            }
+
+            .evidence-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 18px;
+                margin-top: 28px;
+            }
+
+            .evidence-card,
+            .step-card,
+            .team-card {
+                background: #fff;
+                border: 1px solid #d5d0c7;
+                padding: 22px;
+            }
+
+            .evidence-card h3,
+            .step-card h3 {
+                margin: 0 0 12px;
+                font-size: 24px;
+            }
+
+            .evidence-card p,
+            .step-card p,
+            .team-card p {
+                margin: 0;
+                font-family: Arial, sans-serif;
+                color: #555;
+                line-height: 1.7;
+            }
+
+            .steps {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 18px;
+            }
+
+            .step-number {
+                font-family: Arial, sans-serif;
+                color: #8b1e1e;
+                font-weight: 900;
+                margin-bottom: 12px;
+            }
+
+            .team-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 18px;
+            }
+
+            .team-card h3 {
+                margin: 0 0 6px;
+                font-size: 22px;
+            }
+
+            .team-card strong {
+                font-family: Arial, sans-serif;
+                color: #8b1e1e;
+                font-size: 13px;
+                text-transform: uppercase;
+            }
+
+            footer {
+                background: #111827;
+                color: #f8fafc;
+                padding: 35px 7%;
+                font-family: Arial, sans-serif;
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .small-note {
+                font-family: Arial, sans-serif;
+                color: #666;
+                font-size: 13px;
+                line-height: 1.6;
+            }
+
+            .search-results {
+                margin-top: 28px;
+                display: none;
+            }
+
+            .search-results.active {
+                display: block;
+            }
+
+            .result-item {
+                background: #fff;
+                border: 1px solid #d5d0c7;
+                padding: 16px;
+                margin-top: 12px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            }
+
+            .result-item h4 {
+                margin: 0 0 6px;
+                font-size: 16px;
+            }
+
+            .result-item h4 a {
+                color: #8b1e1e;
+            }
+
+            .result-item h4 a:hover {
+                text-decoration: underline;
+            }
+
+            .result-item p.res-content {
+                font-size: 14px !important;
+                margin: 0 !important;
+                line-height: 1.5 !important;
+                color: #555 !important;
+            }
+
+            .result-score {
+                font-size: 12px;
+                color: #777;
+                margin-top: 6px;
+                font-family: Arial, sans-serif;
+            }
+
+            @media (max-width: 950px) {
+                .hero,
+                .checker {
+                    grid-template-columns: 1fr;
+                }
+
+                .checker-panel {
+                    border-right: 0;
+                    border-bottom: 1px solid #d5d0c7;
+                }
+
+                .evidence-grid,
+                .steps {
+                    grid-template-columns: 1fr;
+                }
+
+                nav {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 14px;
+                }
+
+                nav .links {
+                    flex-wrap: wrap;
+                    gap: 14px;
+                }
+
+                .section-title {
+                    display: block;
+                }
+
+                .input-row {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="top-bar">
+            <span>AI-assisted journalism verification</span>
+            <span>Fact Guard Research Edition</span>
+        </div>
+
+        <nav>
+            <a href="#home" class="brand">
+                <video autoplay muted loop playsinline class="brand-video">
+                    <source src="/static/brand-mark.mp4" type="video/mp4" />
+                </video>
+                <div>
+                    <h1>Fact Guard</h1>
+                    <span>Fake News Detection</span>
+                </div>
+            </a>
+            <div class="links">
+                <a href="#home">Home</a>
+                <a href="#model">Verification</a>
+                <a href="#method">Methodology</a>
+                <a href="#about">Team</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </nav>
+
+        <main>
+            <section class="hero" id="home">
+                <video autoplay muted loop playsinline class="hero-video">
+                    <source src="/static/myvideo.mp4" type="video/mp4" />
+                </video>
+                <div>
+                    <div class="kicker">Independent AI Fact-Checking</div>
+                    <h2>Verify news before it spreads.</h2>
+                    <p>
+                        Fact Guard is an AI-powered fake news detection platform
+                        that analyzes article text, source signals, writing
+                        patterns, and credibility indicators to support faster
+                        and more responsible news verification.
+                    </p>
+                    <a class="btn" href="#model">Start Verification</a>
+                </div>
+                <aside class="hero-card">
+                    <h3>What the model checks</h3>
+                    <ul>
+                        <li>Misleading or exaggerated language</li>
+                        <li>Claim consistency and credibility patterns</li>
+                        <li>Suspicious source or missing reference signals</li>
+                        <li>Confidence score for the final classification</li>
+                    </ul>
+                </aside>
+            </section>
+
+            <section class="section" id="model">
+                <div class="section-title">
+                    <div>
+                        <div class="kicker">Verification Desk</div>
+                        <h2>Analyze a news article</h2>
+                    </div>
+                    <p>
+                        Paste a headline, article paragraph, or full news text.
+                        The backend model can classify the content as likely
+                        real, likely fake, or needs review.
+                    </p>
+                </div>
+
+                <div class="checker">
+                    <div class="checker-panel">
+                        <label for="newsText">News content</label>
+                        <textarea
+                            id="newsText"
+                            placeholder="Paste the news headline or article text here..."
+                        ></textarea>
+
+                        <button id="analyzeBtn" class="btn">
+                            Run Fact Guard Analysis
+                        </button>
+                        <div class="status-line" id="statusMessage"></div>
+                    </div>
+
+                    <div class="result-panel" id="resultPanel">
+                        <div id="verdictBadge" class="verdict-badge">
+                            Awaiting Input
+                        </div>
+                        <h3 id="decisionTitle">No article analyzed yet</h3>
+                        <p id="decisionSubtitle">
+                            Submit a piece of news content to receive an AI
+                            credibility assessment.
+                        </p>
+
+                        <div class="meter">
+                            <div class="meter-top">
+                                <span>Misinformation risk</span>
+                                <span id="confidenceText">0%</span>
+                            </div>
+                            <div class="track">
+                                <div class="fill" id="confidenceFill"></div>
+                            </div>
+                        </div>
+
+                        <div class="field-title">Assessment summary</div>
+                        <p id="verdictText">
+                            Fact Guard is ready to evaluate the language,
+                            structure, and credibility signals of the article.
+                        </p>
+
+                        <div id="searchResults" class="search-results">
+                            <div class="field-title">
+                                Related Search Results
+                            </div>
+                            <div id="resultsList"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="method">
+                <div class="section-title">
+                    <div>
+                        <div class="kicker">Editorial Methodology</div>
+                        <h2>How Fact Guard works</h2>
+                    </div>
+                    <p>
+                        The platform is designed to look serious, transparent,
+                        and close to a professional newsroom workflow.
+                    </p>
+                </div>
+
+                <div class="steps">
+                    <div class="step-card">
+                        <div class="step-number">01</div>
+                        <h3>Text Intake</h3>
+                        <p>
+                            The user submits a headline, paragraph, or full
+                            article for analysis.
+                        </p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">02</div>
+                        <h3>Preprocessing</h3>
+                        <p>
+                            The text is cleaned and prepared for the fake-news
+                            detection model.
+                        </p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">03</div>
+                        <h3>AI Classification</h3>
+                        <p>
+                            The model predicts whether the content is likely
+                            real, fake, or uncertain.
+                        </p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">04</div>
+                        <h3>Confidence Report</h3>
+                        <p>
+                            The result is presented with a confidence score and
+                            simple explanation.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="evidence-grid">
+                    <div class="evidence-card">
+                        <h3>Language Signals</h3>
+                        <p>
+                            Detects sensational wording, unusual phrasing, and
+                            suspicious article structure.
+                        </p>
+                    </div>
+                    <div class="evidence-card">
+                        <h3>Credibility Indicators</h3>
+                        <p>
+                            Highlights missing source details, unclear
+                            attribution, or weak evidence patterns.
+                        </p>
+                    </div>
+                    <div class="evidence-card">
+                        <h3>Decision Support</h3>
+                        <p>
+                            Provides a fast first-layer review for students,
+                            researchers, and journalists.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="about">
+                <div class="section-title">
+                    <div>
+                        <div class="kicker">Project Team</div>
+                        <h2>Built by CS students</h2>
+                    </div>
+                    <p>
+                        Fact Guard was designed as an academic AI project
+                        focused on responsible information verification.
+                    </p>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <h3>Ahmad Ehmidee</h3>
+                        <strong>Art Director</strong>
+                        <p>
+                            Supports the visual identity and interface
+                            presentation.
+                        </p>
+                    </div>
+                    <div class="team-card">
+                        <h3>Hamza Khalil</h3>
+                        <strong>Team Leader</strong>
+                        <p>
+                            Leads the project direction and model integration
+                            workflow.
+                        </p>
+                    </div>
+                    <div class="team-card">
+                        <h3>Iyad Elshqeirat</h3>
+                        <strong>Product Manager</strong>
+                        <p>
+                            Organizes features, user flow, and verification
+                            requirements.
+                        </p>
+                    </div>
+                    <div class="team-card">
+                        <h3>Tareq Dahbour</h3>
+                        <strong>Product Designer</strong>
+                        <p>
+                            Designs the user experience and presentation
+                            structure.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="contact">
+                <div class="section-title">
+                    <div>
+                        <div class="kicker">Contact</div>
+                        <h2>Get in touch</h2>
+                    </div>
+                    <p>
+                        For collaboration, testing, or academic discussion,
+                        contact the Fact Guard team.
+                    </p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <strong>Fact Guard | AI News Verification Platform</strong>
+            <span
+                >Designed for fake news detection research and demo
+                presentation.</span
+            >
+        </footer>
+
+        <script>
+            const analyzeBtn = document.getElementById("analyzeBtn");
+            const newsText = document.getElementById("newsText");
+            const statusMessage = document.getElementById("statusMessage");
+            const verdictBadge = document.getElementById("verdictBadge");
+            const decisionTitle = document.getElementById("decisionTitle");
+            const decisionSubtitle =
+                document.getElementById("decisionSubtitle");
+            const confidenceText = document.getElementById("confidenceText");
+            const confidenceFill = document.getElementById("confidenceFill");
+            const verdictText = document.getElementById("verdictText");
+
+            function showResult(prediction, results = []) {
+                const percentage = (prediction * 100).toFixed(0);
+                confidenceText.textContent = `${percentage}%`;
+                confidenceFill.style.width = `${percentage}%`;
+
+                verdictBadge.className = "verdict-badge";
+
+                if (prediction >= 0.65) {
+                    verdictBadge.classList.add("badge-fake");
+                    verdictBadge.textContent = "Likely Fake";
+                    decisionTitle.textContent = "High risk of misinformation";
+                    decisionSubtitle.textContent =
+                        "The submitted content contains signals commonly associated with fake or misleading news.";
+                    verdictText.textContent =
+                        "Fact Guard recommends reviewing the source, checking supporting evidence, and comparing the claim with trusted outlets before sharing.";
+                } else if (prediction <= 0.35) {
+                    verdictBadge.classList.add("badge-true");
+                    verdictBadge.textContent = "Likely Real";
+                    decisionTitle.textContent = "Credibility signals detected";
+                    decisionSubtitle.textContent =
+                        "The submitted content appears more consistent with reliable news patterns.";
+                    verdictText.textContent =
+                        "Fact Guard did not detect strong fake-news indicators. Still, important claims should be verified using primary or trusted sources.";
+                } else {
+                    verdictBadge.classList.add("badge-review");
+                    verdictBadge.textContent = "Needs Review";
+                    decisionTitle.textContent =
+                        "Manual verification recommended";
+                    decisionSubtitle.textContent =
+                        "The model could not confidently classify the content.";
+                    verdictText.textContent =
+                        "The article may need deeper human review, source checking, and claim comparison before a final decision.";
+                }
+
+                const searchResults = document.getElementById("searchResults");
+                const resultsList = document.getElementById("resultsList");
+
+                if (results && results.length > 0) {
+                    searchResults.classList.add("active");
+                    resultsList.innerHTML = "";
+                    results.forEach((res) => {
+                        const item = document.createElement("div");
+                        item.className = "result-item";
+
+                        const title = document.createElement("h4");
+                        title.style.display = "flex";
+                        title.style.alignItems = "center";
+                        title.style.gap = "8px";
+
+                        if (res.url) {
+                            let hostname = "";
+                            hostname = new URL(res.url).hostname;
+
+                            if (hostname) {
+                                const favicon = document.createElement("img");
+                                favicon.src = `https://www.google.com/s2/favicons?domain=${hostname}&sz=32`;
+                                favicon.style.width = "16px";
+                                favicon.style.height = "16px";
+                                title.appendChild(favicon);
+                            }
+
+                            const link = document.createElement("a");
+                            link.href = res.url;
+                            link.target = "_blank";
+                            link.textContent = res.title || "No Title";
+                            title.appendChild(link);
+                        } else {
+                            title.textContent = res.title || "No Title";
+                        }
+
+                        item.appendChild(title);
+
+                        if (res.similarity) {
+                            const score = document.createElement("div");
+                            score.className = "result-score";
+                            score.textContent = `Similarity Score: ${(res.similarity * 100).toFixed(1)}%`;
+                            item.appendChild(score);
+                        }
+
+                        resultsList.appendChild(item);
+                    });
+                } else {
+                    searchResults.classList.remove("active");
+                    resultsList.innerHTML = "";
+                }
+            }
+
+            analyzeBtn.addEventListener("click", async () => {
+                const text = newsText.value.trim();
+                if (!text) {
+                    verdictBadge.className = "verdict-badge badge-review";
+                    verdictBadge.textContent = "Missing Text";
+                    decisionTitle.textContent = "Please paste news content";
+                    decisionSubtitle.textContent =
+                        "Fact Guard needs a headline, paragraph, or article body to analyze.";
+                    verdictText.textContent =
+                        "Add the news text, then run the analysis again.";
+                    confidenceText.textContent = "0%";
+                    confidenceFill.style.width = "0%";
+                    return;
+                }
+
+                analyzeBtn.disabled = true;
+                statusMessage.textContent = "Running Fact Guard analysis...";
+                verdictBadge.className = "verdict-badge";
+                verdictBadge.textContent = "Processing";
+                decisionTitle.textContent = "Analyzing article credibility";
+                decisionSubtitle.textContent =
+                    "The AI model is reviewing the submitted news content.";
+                verdictText.textContent =
+                    "Checking text patterns, source information, and credibility indicators.";
+                confidenceText.textContent = "0%";
+                confidenceFill.style.width = "0%";
+                document
+                    .getElementById("searchResults")
+                    .classList.remove("active");
+
+                const response = await fetch("/predict_search", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        text,
+                    }),
+                });
+
+                if (!response.ok) throw new Error("Server error");
+                const data = await response.json();
+                console.log(data);
+                statusMessage.textContent = "Analysis completed.";
+                showResult(data.score, data.results);
+                analyzeBtn.disabled = false;
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Fact Guard",
+  "version": "1.0",
+  "description": "",
+  "permissions": ["activeTab"],
+  "host_permissions": [
+    "http://127.0.0.1:5000/*",
+    "http://localhost:5000/*",
+    "*://*.facebook.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.facebook.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["*://*.facebook.com/*"],
+      "js": ["isolated.js"]
+    }
+  ]
+}
